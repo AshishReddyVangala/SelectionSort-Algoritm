@@ -1,0 +1,108 @@
+import java.io.*;
+
+class LinkedList {
+    static class Node {
+        int data;
+        Node next;
+
+        public Node(int data) {
+            this.data = data;
+            this.next = null;
+        }
+    }
+
+    Node head;
+
+    public LinkedList() {
+        this.head = null;
+    }
+
+    public void insert(int data) {
+        Node newNode = new Node(data);
+        if (head == null) {
+            head = newNode;
+        } else {
+            Node current = head;
+            while (current.next != null) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+    }
+
+    public void display(FileWriter writer) throws IOException {
+        Node current = head;
+        while (current != null) {
+            writer.write(Integer.toString(current.data));
+
+            // Add comma if it's not the last element
+            if (current.next != null) {
+                writer.write(",");
+            }
+
+            current = current.next;
+        }
+    }
+}
+
+public class SelectionSort {
+    public static void main(String[] args) throws IOException {
+        // Create a linked list to store numbers
+        LinkedList linkedList = new LinkedList();
+
+        // Open the input file "num.txt"
+        BufferedReader reader = new BufferedReader(new FileReader("num.txt"));
+
+        // Read numbers from the file and add them to the list
+        String line;
+        while ((line = reader.readLine()) != null) {
+            // Split the line by commas and add numbers to the list
+            String[] tokens = line.split(",");
+            for (String token : tokens) {
+                linkedList.insert(Integer.parseInt(token));
+            }
+        }
+        reader.close();
+
+        // Sort the numbers using the selection sort algorithm
+        selectionSort(linkedList);
+
+        // Open the output file "ascended_num.txt" for writing
+        FileWriter writer = new FileWriter("ascended_num.txt");
+
+        // Write sorted numbers to the output file
+        linkedList.display(writer);
+
+        writer.close();
+    }
+
+    // Selection sort algorithm to sort a linked list
+    public static void selectionSort(LinkedList linkedList) {
+        LinkedList.Node current = linkedList.head;
+        while (current != null) {
+            LinkedList.Node min = findMinimum(current);
+            swap(current, min);
+            current = current.next;
+        }
+    }
+
+    // Helper method to find the node with the minimum value starting from a given node
+    private static LinkedList.Node findMinimum(LinkedList.Node start) {
+        LinkedList.Node min = start;
+        LinkedList.Node current = start.next;
+        while (current != null) {
+            if (current.data < min.data) {
+                min = current;
+            }
+            current = current.next;
+        }
+        return min;
+    }
+
+    // Helper method to swap the data of two nodes
+    private static void swap(LinkedList.Node a, LinkedList.Node b) {
+        int temp = a.data;
+        a.data = b.data;
+        b.data = temp;
+    }
+}
